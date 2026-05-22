@@ -1,4 +1,4 @@
-import type { MiokuService } from "../../core/types";
+import type { MiokuService } from "mioku";
 import { AppleMusicClientImpl } from "./client";
 import {
   startDecryptorRuntime,
@@ -6,6 +6,7 @@ import {
 } from "./decryptor-runtime";
 import { AppleMusicAuthorizationTokenProvider } from "./token-provider";
 import type { AppleMusicServiceApi } from "./types";
+export type { AppleMusicServiceApi };
 
 const tokenProvider = new AppleMusicAuthorizationTokenProvider();
 
