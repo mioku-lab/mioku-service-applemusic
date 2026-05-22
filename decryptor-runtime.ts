@@ -1,6 +1,10 @@
 import { spawn, type ChildProcess } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const DECRYPTOR_PORT = 19123;
 const HEALTH_URL = `http://127.0.0.1:${DECRYPTOR_PORT}/health`;
@@ -34,8 +38,9 @@ export async function startDecryptorRuntime(): Promise<void> {
     return;
   }
 
-  const cwd = path.join(process.cwd(), "src", "services", "applemusic", "decryptor-go");
-  const goPath = path.join(process.cwd(), "temp", "go");
+  const serviceRoot = __dirname;
+  const cwd = path.join(serviceRoot, "decryptor-go");
+  const goPath = path.join(serviceRoot, "temp", "go");
   await fs.mkdir(goPath, { recursive: true });
   const child = spawn("go", ["run", "./cmd/server", "--port", String(DECRYPTOR_PORT)], {
     cwd,
