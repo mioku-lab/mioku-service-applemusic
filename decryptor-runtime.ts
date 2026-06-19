@@ -1,7 +1,8 @@
-import { spawn, type ChildProcess } from "child_process";
+import { spawn, spawnSync, type ChildProcess } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { fileURLToPath } from "url";
+import { logger } from "mioki";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,18 @@ let started = false;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isGoAvailable(): boolean {
+  try {
+    const result = spawnSync("go", ["version"], { stdio: "ignore" });
+    if (result.error) {
+      return false;
+    }
+    return result.status === 0;
+  } catch {
+    return false;
+  }
 }
 
 async function waitForHealth(timeoutMs: number): Promise<void> {
@@ -38,6 +51,13 @@ export async function startDecryptorRuntime(): Promise<void> {
     return;
   }
 
+  if (!isGoAvailable()) {
+    logger.warn(
+      "未检测到 go 可执行文件，applemusic 服务无法启动 decryptor，请安装 go 后重启",
+    );
+    throw new Error("go is not installed");
+  }
+
   const serviceRoot = __dirname;
   const cwd = path.join(serviceRoot, "decryptor-go");
   const goPath = path.join(serviceRoot, "temp", "go");
@@ -57,13 +77,13 @@ export async function startDecryptorRuntime(): Promise<void> {
   child.stdout?.on("data", (chunk) => {
     const msg = String(chunk || "").trim();
     if (msg) {
-      console.info(`[applemusic-decryptor] ${msg}`);
+      logger.info(`[applemusic-decryptor] ${msg}`);
     }
   });
   child.stderr?.on("data", (chunk) => {
     const msg = String(chunk || "").trim();
     if (msg) {
-      console.warn(`[applemusic-decryptor] ${msg}`);
+      logger.warn(`[applemusic-decryptor] ${msg}`);
     }
   });
 
