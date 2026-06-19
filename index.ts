@@ -1,4 +1,8 @@
 import type { MiokuService } from "mioku";
+import {
+  registerServiceConfig,
+  getServiceConfig,
+} from "mioku";
 import { AppleMusicClientImpl } from "./client";
 import {
   startDecryptorRuntime,
@@ -14,6 +18,10 @@ const api: AppleMusicServiceApi = {
   createClient(options) {
     return new AppleMusicClientImpl(options, tokenProvider);
   },
+
+  getDefaultOptions() {
+    return getServiceConfig("applemusic", "base");
+  },
 };
 
 const applemusicService: MiokuService = {
@@ -23,6 +31,11 @@ const applemusicService: MiokuService = {
     "Apple Music service for song search/detail/album detail and AAC/cover downloads",
   api,
   async init() {
+    registerServiceConfig("applemusic", "base", {
+      mediaUserToken: "",
+      storefront: "cn",
+      language: "zh-CN",
+    });
     await startDecryptorRuntime();
   },
   async dispose() {
