@@ -3,6 +3,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { logger } from "mioki";
+import { freePort } from "./port-utils";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,13 @@ export async function startDecryptorRuntime(): Promise<void> {
       "未检测到 go 可执行文件，applemusic 服务无法启动 decryptor，请安装 go 后重启",
     );
     throw new Error("go is not installed");
+  }
+
+  const freed = await freePort(DECRYPTOR_PORT);
+  if (freed.remainingPids.length > 0) {
+    throw new Error(
+      `applemusic decryptor 端口 ${DECRYPTOR_PORT} 被占用且无法结束 (PID: ${freed.remainingPids.join(", ")})`,
+    );
   }
 
   const serviceRoot = __dirname;
