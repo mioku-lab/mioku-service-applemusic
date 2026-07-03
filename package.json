@@ -1,6 +1,6 @@
 {
   "name": "mioku-service-applemusic",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Apple Music 服务，支持歌曲搜索、详情、专辑详情、AAC 下载与封面下载",
   "main": "index.ts",
   "keywords": [
