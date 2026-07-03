@@ -9,7 +9,7 @@ import {
   stopDecryptorRuntime,
 } from "./decryptor-runtime";
 import { AppleMusicAuthorizationTokenProvider } from "./token-provider";
-import type { AppleMusicServiceApi } from "./types";
+import type { AppleMusicServiceApi, AppleMusicClientOptions } from "./types";
 export type { AppleMusicServiceApi };
 
 const tokenProvider = new AppleMusicAuthorizationTokenProvider();
@@ -19,8 +19,8 @@ const api: AppleMusicServiceApi = {
     return new AppleMusicClientImpl(options, tokenProvider);
   },
 
-  getDefaultOptions() {
-    return getServiceConfig("applemusic", "base");
+  async getDefaultOptions(): Promise<AppleMusicClientOptions> {
+    return (await getServiceConfig("applemusic", "base")) as AppleMusicClientOptions;
   },
 };
 
@@ -31,7 +31,7 @@ const applemusicService: MiokuService = {
     "Apple Music service for song search/detail/album detail and AAC/cover downloads",
   api,
   async init() {
-    registerServiceConfig("applemusic", "base", {
+    await registerServiceConfig("applemusic", "base", {
       mediaUserToken: "",
       storefront: "cn",
       language: "zh-CN",

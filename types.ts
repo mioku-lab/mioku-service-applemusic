@@ -118,7 +118,7 @@ export interface AppleMusicClient {
 
 export interface AppleMusicServiceApi {
   createClient(options?: AppleMusicClientOptions): AppleMusicClient;
-  getDefaultOptions(): AppleMusicClientOptions;
+  getDefaultOptions(): Promise<AppleMusicClientOptions>;
 }
 
 export interface CatalogSongAttributes {
