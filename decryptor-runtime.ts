@@ -105,11 +105,26 @@ export async function startDecryptorRuntime(): Promise<void> {
 }
 
 export async function stopDecryptorRuntime(): Promise<void> {
-  if (!processRef) {
+  const ref = processRef;
+  if (!ref) {
     started = false;
     return;
   }
-  processRef.kill("SIGTERM");
+
+  const exited = new Promise<void>((resolve) => {
+    ref.on("exit", () => resolve());
+    ref.on("error", () => resolve());
+  });
+
+  ref.kill("SIGTERM");
+
+  const timeout = setTimeout(() => {
+    try { ref.kill("SIGKILL"); } catch {}
+  }, 5_000);
+
+  await exited;
+  clearTimeout(timeout);
+
   processRef = null;
   started = false;
 }

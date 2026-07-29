@@ -1,5 +1,6 @@
 import type { MiokuService } from "mioku";
 import {
+  defineService,
   registerServiceConfig,
   getServiceConfig,
 } from "mioku";
@@ -10,6 +11,8 @@ import {
 } from "./decryptor-runtime";
 import { AppleMusicAuthorizationTokenProvider } from "./token-provider";
 import type { AppleMusicServiceApi, AppleMusicClientOptions } from "./types";
+
+export const AppleMusicService = defineService<AppleMusicServiceApi>("applemusic");
 export type { AppleMusicServiceApi };
 
 const tokenProvider = new AppleMusicAuthorizationTokenProvider();
