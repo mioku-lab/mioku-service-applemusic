@@ -2,7 +2,7 @@ import { spawn, spawnSync, type ChildProcess } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { logger } from "mioki";
+import { logger } from "mioku";
 import { freePort } from "./port-utils";
 
 const __filename = fileURLToPath(import.meta.url);
